@@ -1,0 +1,278 @@
+UC1-
+mysql> create database payroll_service;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> show databases;
++---------------------+
+| Database            |
++---------------------+
+| adderessbookservice |
+| addressbook         |
+| addressnbook        |
+| information_schema  |
+| mysql               |
+| payroll_service     |
+| performance_schema  |
+| sakila              |
+| sys                 |
+| world               |
++---------------------+
+10 rows in set (0.02 sec)
+=============================================================================
+
+UC2-
+mysql> use payroll_service;
+Database changed
+mysql> create table employee_payroll(id int PRIMARY KEY AUTO_INCREMENT , Name varchar(20) , Salary int , Start_Date DATE);
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> desc employee_payroll;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| Name       | varchar(20) | YES  |     | NULL    |                |
+| Salary     | int         | YES  |     | NULL    |                |
+| Start_Date | date        | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+4 rows in set (0.02 sec)
+================================================================================
+
+UC3-
+mysql> insert into employee_payroll VALUES(1,"Vishal Kavatkar", 500000, '2012-3-20');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into employee_payroll VALUES(2,"Raj Dicholkar", 400000, '2014-4-10');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into employee_payroll VALUES(3,"Akshay Khanna", 450000, '2018-4-31');
+ERROR 1292 (22007): Incorrect date value: '2018-4-31' for column 'Start_Date' at row 1
+mysql> insert into employee_payroll VALUES(3,"Akshay Khanna", 450000, '2018-4-1');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM employee_payroll;
++----+-----------------+--------+------------+
+| id | Name            | Salary | Start_Date |
++----+-----------------+--------+------------+
+|  1 | Vishal Kavatkar | 500000 | 2012-03-20 |
+|  2 | Raj Dicholkar   | 400000 | 2014-04-10 |
+|  3 | Akshay Khanna   | 450000 | 2018-04-01 |
++----+-----------------+--------+------------+
+3 rows in set (0.00 sec)
+=======================================================================================
+
+UC4-
+
+mysql> SELECT * FROM employee_payroll;
++----+-----------------+--------+------------+
+| id | Name            | Salary | Start_Date |
++----+-----------------+--------+------------+
+|  1 | Vishal Kavatkar | 500000 | 2012-03-20 |
+|  2 | Raj Dicholkar   | 400000 | 2014-04-10 |
+|  3 | Akshay Khanna   | 450000 | 2018-04-01 |
++----+-----------------+--------+------------+
+3 rows in set (0.00 sec)
+==================================================================================================
+
+UC5 -
+
+mysql> select salary from employee_payroll where name ="Vishal Kavatkar";
++--------+
+| salary |
++--------+
+| 500000 |
++--------+
+1 row in set (0.01 sec)
+mysql> SELECT Name, Start_Date FROM employee_payroll WHERE Start_Date Between CAST('2012-01-01'AS DATE) AND DATE(NOW());
++-----------------+------------+
+| Name            | Start_Date |
++-----------------+------------+
+| Vishal Kavatkar | 2012-03-20 |
+| Raj Dicholkar   | 2014-04-10 |
+| Akshay Khanna   | 2018-04-01 |
++-----------------+------------+
+3 rows in set (0.01 sec)
+===============================================================================================================
+
+UC6-
+
+mysql> UPDATE employee_payroll SET Gender = "M" WHERE Name = "Vishal Kavatkar" or Name = "Raj Dicholkar";
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> UPDATE employee_payroll SET Gender = "M" WHERE Name = "Akshay Khanna";
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+-----------------+--------+------------+--------+
+| id | Name            | Salary | Start_Date | Gender |
++----+-----------------+--------+------------+--------+
+|  1 | Vishal Kavatkar | 500000 | 2012-03-20 | M      |
+|  2 | Raj Dicholkar   | 400000 | 2014-04-10 | M      |
+|  3 | Akshay Khanna   | 450000 | 2018-04-01 | M      |
++----+-----------------+--------+------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> UPDATE employee_payroll SET Gender = "F" WHERE Name = "Akshay Khanna";
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+-----------------+--------+------------+--------+
+| id | Name            | Salary | Start_Date | Gender |
++----+-----------------+--------+------------+--------+
+|  1 | Vishal Kavatkar | 500000 | 2012-03-20 | M      |
+|  2 | Raj Dicholkar   | 400000 | 2014-04-10 | M      |
+|  3 | Akshay Khanna   | 450000 | 2018-04-01 | F      |
++----+-----------------+--------+------------+--------+
+3 rows in set (0.00 sec)
+===========================================================================================================
+
+UC7-
+
+mysql> SELECT SUM(salary) FROM employee_payroll WHERE Gender = 'M' GROUP BY Gender;
++-------------+
+| SUM(salary) |
++-------------+
+|      900000 |
++-------------+
+1 row in set (0.01 sec)
+
+mysql> SELECT AVG(Salary) FROM employee_payroll GROUP BY Gender;
++-------------+
+| AVG(Salary) |
++-------------+
+| 450000.0000 |
+| 450000.0000 |
++-------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT MIN(Salary) FROM employee_payroll GROUP BY Gender;
++-------------+
+| MIN(Salary) |
++-------------+
+|      400000 |
+|      450000 |
++-------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT MAX(Salary) FROM employee_payroll GROUP BY Gender;
++-------------+
+| MAX(Salary) |
++-------------+
+|      500000 |
+|      450000 |
++-------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT Gender, COUNT(Gender) FROM employee_payroll GROUP BY Gender;
++--------+---------------+
+| Gender | COUNT(Gender) |
++--------+---------------+
+| M      |             2 |
+| F      |             1 |
++--------+---------------+
+2 rows in set (0.00 sec)
+==========================================================================================================================
+
+UC8-
+
+mysql> ALTER TABLE employee_payroll ADD Phone int, ADD Address varchar(50) DEFAULT 'India', ADD Department varchar(30) NOT NULL;
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+-----------------+--------+------------+--------+-------+---------+------------+
+| id | Name            | Salary | Start_Date | Gender | Phone | Address | Department |
++----+-----------------+--------+------------+--------+-------+---------+------------+
+|  1 | Vishal Kavatkar | 500000 | 2012-03-20 | M      |  NULL | India   |            |
+|  2 | Raj Dicholkar   | 400000 | 2014-04-10 | M      |  NULL | India   |            |
+|  3 | Akshay Khanna   | 450000 | 2018-04-01 | F      |  NULL | India   |            |
++----+-----------------+--------+------------+--------+-------+---------+------------+
+3 rows in set (0.01 sec)
+================================================================================================================================
+
+UC9-
+
+mysql> ALTER TABLE employee_payroll ADD Basic_Pay int, ADD Deductions int, ADD Taxable_Pay int, ADD Income_Tax int, ADD Net_Pay int;
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+-----------------+--------+------------+--------+-------+---------+------------+-----------+------------+-------------+------------+---------+
+| id | Name            | Salary | Start_Date | Gender | Phone | Address | Department | Basic_Pay | Deductions | Taxable_Pay | Income_Tax | Net_Pay |
++----+-----------------+--------+------------+--------+-------+---------+------------+-----------+------------+-------------+------------+---------+
+|  1 | Vishal Kavatkar | 500000 | 2012-03-20 | M      |  NULL | India   |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  2 | Raj Dicholkar   | 400000 | 2014-04-10 | M      |  NULL | India   |            |      NULL |       NULL |        NULL |       NULL |    NULL |
+|  3 | Akshay Khanna   | 450000 | 2018-04-01 | F      |  NULL | India   |            |      NULL |       NULL |        NULL |       NULL |    NULL |
++----+-----------------+--------+------------+--------+-------+---------+------------+-----------+------------+-------------+------------+---------+
+3 rows in set (0.00 sec)
+=====================================================================================================================================
+
+UC10-
+
+mysql> CREATE TABLE Department (
+    -> department_id int PRIMARY KEY ,
+    -> Name varchar(30),
+    -> Department varchar(30) NOT NULL,
+    -> employee_id int,
+    -> FOREIGN KEY (employee_id) REFERENCES employee_payroll(id) );
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> desc Department
+    -> ^C
+mysql> desc Department;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| department_id | int         | NO   | PRI | NULL    |       |
+| Name          | varchar(30) | YES  |     | NULL    |       |
+| Department    | varchar(30) | NO   |     | NULL    |       |
+| employee_id   | int         | YES  | MUL | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> ALTER TABLE employee_payroll DROP COLUMN Department;
+Query OK, 0 rows affected (0.20 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO employee_payroll VALUES(4, 'Terissa', 350000, '2021-3-21', 'F', 123456789, 'US', 123456, 123, 123, 123, 123);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO department VALUES (2, 'Terissa', 'Marketing', 4);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> SELECT * FROM employee_payroll LEFT JOIN department ON employee_payroll.id = department.employee_id;
++----+-----------------+--------+------------+--------+-----------+---------+-----------+------------+-------------+------------+---------+---------------+---------+------------+-------------+
+| id | Name            | Salary | Start_Date | Gender | Phone     | Address | Basic_Pay | Deductions | Taxable_Pay | Income_Tax | Net_Pay | department_id | Name    | Department | employee_id |
++----+-----------------+--------+------------+--------+-----------+---------+-----------+------------+-------------+------------+---------+---------------+---------+------------+-------------+
+|  1 | Vishal Kavatkar | 500000 | 2012-03-20 | M      |      NULL | India   |      NULL |       NULL |        NULL |       NULL |    NULL |          NULL | NULL    | NULL       |        NULL |
+|  2 | Raj Dicholkar   | 400000 | 2014-04-10 | M      |      NULL | India   |      NULL |       NULL |        NULL |       NULL |    NULL |          NULL | NULL    | NULL       |        NULL |
+|  3 | Akshay Khanna   | 450000 | 2018-04-01 | F      |      NULL | India   |      NULL |       NULL |        NULL |       NULL |    NULL |          NULL | NULL    | NULL       |        NULL |
+|  4 | Terissa         | 350000 | 2021-03-21 | F      | 123456789 | US      |    123456 |        123 |         123 |        123 |     123 |             2 | Terissa | Marketing  |           4 |
++----+-----------------+--------+------------+--------+-----------+---------+-----------+------------+-------------+------------+---------+---------------+---------+------------+-------------+
+4 rows in set (0.01 sec)
+
+=====================================================================================================================================
+
+UC11-
+
+mysql>  CREATE TABLE PAYROLL AS (SELECT id, Name, Salary, Basic_Pay, Deductions, Taxable_Pay, Income_Tax, Net_Pay FROM employee_payroll);
+Query OK, 4 rows affected (0.09 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> desc PAYROLL;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| id          | int         | NO   |     | 0       |       |
+| Name        | varchar(20) | YES  |     | NULL    |       |
+| Salary      | int         | YES  |     | NULL    |       |
+| Basic_Pay   | int         | YES  |     | NULL    |       |
+| Deductions  | int         | YES  |     | NULL    |       |
+| Taxable_Pay | int         | YES  |     | NULL    |       |
+| Income_Tax  | int         | YES  |     | NULL    |       |
+| Net_Pay     | int         | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+8 rows in set (0.02 sec)
